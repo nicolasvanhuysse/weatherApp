@@ -1,20 +1,17 @@
 <template>
-  <ion-page>
-    <ion-content :fullscreen="true">
-      <ion-slides pager="true" :options="slideOpts">
       <ion-slide>
         <div id="container">
           <ion-grid>
             
             <ion-row>
               <ion-col>
-                <h1>Ma position</h1>
+                <h1>{{title}}</h1>
               </ion-col>
             </ion-row>
 
             <ion-row>
               <ion-col>
-                <h2>19 °</h2>
+                <h2>{{temp}}°</h2>
               </ion-col>
             </ion-row>
 
@@ -32,7 +29,7 @@
                 <ion-icon size="large" :icon="sunnyOutline"></ion-icon>
               </ion-col>
               <ion-col>
-                <p>19 °</p>
+                <p>{{temp1}}°</p>
               </ion-col>
             </ion-row>
 
@@ -44,7 +41,7 @@
                 <ion-icon size="large" :icon="cloudyOutline"></ion-icon>
               </ion-col>
               <ion-col>
-                <p>19 °</p>
+                <p>{{temp2}}°</p>
               </ion-col>
             </ion-row>
 
@@ -56,7 +53,7 @@
                 <ion-icon size="large" :icon="thunderstormOutline"></ion-icon>
               </ion-col>
               <ion-col>
-                <p>19 °</p>
+                <p>{{temp3}}°</p>
               </ion-col>
             </ion-row>
 
@@ -68,7 +65,7 @@
                 <ion-icon size="large" :icon="rainyOutline"></ion-icon>
               </ion-col>
               <ion-col>
-                <p>19 °</p>
+                <p>{{temp4}}°</p>
               </ion-col>
             </ion-row>
 
@@ -76,42 +73,45 @@
 
         </div>
       </ion-slide>
-      <compoHome :title="'PARIS'" :temp= "21" :temp1 = "19" :temp2 = "20" :temp3 = "21" :temp4 = "21"></compoHome>
-      </ion-slides>
-    </ion-content>
-  </ion-page>
 </template>
 
 <script lang="ts">
 import { 
-IonContent,
-IonPage, 
 IonIcon, 
 IonCol, 
 IonGrid, 
 IonRow,
-IonSlides,
 IonSlide
  } from '@ionic/vue';
 import { defineComponent } from 'vue';
 import { sunnyOutline , rainyOutline, thunderstormOutline , cloudyOutline } from 'ionicons/icons';
-import compoHome from './compoHome.vue';
 
 export default defineComponent({
-  name: 'Home',
+  name: 'compoHome',
   components: {
-    IonContent,
+    // IonContent,
     // IonHeader,
-    IonPage,
+    // IonPage,
     // IonTitle,
     // IonToolbar,
     IonIcon,
-    IonSlides,
+    // IonSlides,
     IonSlide,
     IonCol,
     IonGrid,
-    IonRow,
-    compoHome
+    IonRow
+  },
+    props:{
+      title: String,
+      temp: Number,
+      // day1: String,
+      temp1: Number,
+      // day2: String,
+      temp2: Number,
+      // day3: String,
+      temp3: Number,
+      // day4: String,
+      temp4: Number
   },
   setup() {
     const slideOpts = {
