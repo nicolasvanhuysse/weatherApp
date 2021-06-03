@@ -3,28 +3,35 @@
         <ion-content :fullscreen="true">
             <ion-card>
             </ion-card>
-            <card :title="'PARIS'" :temp = "22"> </card>
-            <card :title="'TOURNAI'" :temp = "21"></card>
+            <card  v-for="(city,index) in cities" :key="index" :title="city.name" :temp="city.name"  ></card>
         </ion-content>
     </ion-page>
 </template>
 
-<script lang="ts">
+<script>
 import {
     IonPage,
     IonContent,
-    // IonCol,
-    // IonGrid,
-    // IonRow,
-    // IonIcon,
     IonCard, 
-    // IonCardContent,
     actionSheetController,
  } from '@ionic/vue';
 
 import { defineComponent } from 'vue';
 
 import Card from './Card.vue';
+
+import weatherService from "../services/weatherService"
+
+import {DATABASE_CONFIGURATION} from '../config';
+
+import firebase from 'firebase/app'
+import 'firebase/firestore'
+// Get a Firestore instance
+if (firebase.apps.length === 0) {
+        firebase.initializeApp(DATABASE_CONFIGURATION);
+    }
+
+    export const db = firebase.firestore();
 
 import { 
     sunnyOutline, 
@@ -40,16 +47,13 @@ export default defineComponent({
   components: {
     IonPage,
     IonContent,
-    // IonHeader,
-    // IonTitle,
-    // IonToolbar,
-    // IonIcon,
-    // IonCol,
-    // IonGrid,
-    // IonRow,
     IonCard, 
-    // IonCardContent,
     Card
+  },
+    data() {
+    return {
+      cities: [],
+    }
   },
   methods: {
     async presentActionSheet() {
@@ -89,7 +93,24 @@ export default defineComponent({
       thunderstormOutline,
       cloudyOutline
     }
-    }
+    },
+        async mounted() {
+      db.collection("Cities")
+      .get()
+      .then(async (querySnapshot) => {
+        const documents = querySnapshot.docs.map((doc) => doc.data());
+
+        const weatherList = await Promise.all(
+          documents.map(async (city) => ({
+             name: city.name,
+             currentWeather: await weatherService.get5daysCityName(city.name),
+          }))
+         
+        );
+        this.cities = weatherList;
+        console.log(this.cities)
+      });
+    },
 });
 </script>
 

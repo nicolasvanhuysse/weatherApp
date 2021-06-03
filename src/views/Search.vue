@@ -67,7 +67,7 @@ export default defineComponent({
         this.openToast(msg);
       } else {
         this.addCities();
-        const msg = 'La ville a bien été ajouté a vos favori';
+        const msg = 'La ville a bien été ajouté à vos favoris';
         this.openToast(msg);
       }
     },

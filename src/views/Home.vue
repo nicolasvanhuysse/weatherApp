@@ -1,7 +1,5 @@
 <template>
   <ion-page>
-    <!-- v-for="(city,index) in cities" -->
-    <!-- :key="index" -->
     <ion-content :fullscreen="true">
       <ion-slides pager="true" :options="slideOpts" v-if="cities.length>0">
       <ion-slide>
@@ -75,17 +73,12 @@
             </ion-row>
 
           </ion-grid>
-                  <ion-button type="submit" @click.prevent="addCities()" >Ajouter</ion-button>
         </div>
       </ion-slide>
       <!-- cities[0].name -->
       <!-- v-if="cities.length>0" :title="cities[0].name" -->
-      <!-- <div v-if="cities.length>0"> -->
-        <compoHome  :title="cities[0].name" >
-          </compoHome>
-
-
-          <!-- </div> -->
+      <!-- temp="city.currentWeather.list[0].main.temp" -->
+        <compoHome  v-for="(city,index) in cities" :key="index" :title="city.name" :temp="city.name"  ></compoHome>
       
       </ion-slides>
     </ion-content>
@@ -93,6 +86,7 @@
 </template>
 
 <script>
+
 import { 
 IonContent,
 IonPage, 
@@ -103,6 +97,7 @@ IonRow,
 IonSlides,
 IonSlide
  } from '@ionic/vue';
+
 import { defineComponent } from 'vue';
 import { sunnyOutline , rainyOutline, thunderstormOutline , cloudyOutline } from 'ionicons/icons';
 
@@ -113,8 +108,7 @@ import {DATABASE_CONFIGURATION} from '../config';
 
 import firebase from 'firebase/app'
 import 'firebase/firestore'
-// import db from './Search'
-// // Get a Firestore instance
+
 if (firebase.apps.length === 0) {
         firebase.initializeApp(DATABASE_CONFIGURATION);
     }
@@ -125,10 +119,7 @@ export default defineComponent({
   name: 'Home',
   components: {
     IonContent,
-    // IonHeader,
     IonPage,
-    // IonTitle,
-    // IonToolbar,
     IonIcon,
     IonSlides,
     IonSlide,
@@ -156,11 +147,6 @@ export default defineComponent({
     }
     },
     methods: {
-      addCities() {
-        db.collection('Cities').add({
-        name: 'Lille'
-        })    
-      }
     },
     async mounted() {
       db.collection("Cities")
@@ -171,13 +157,12 @@ export default defineComponent({
         const weatherList = await Promise.all(
           documents.map(async (city) => ({
              name: city.name,
-          currentWeather: await weatherService.getCityName(city.name),
+             currentWeather: await weatherService.get5daysCityName(city.name),
           }))
          
         );
         this.cities = weatherList;
         console.log(this.cities)
-        console.log(documents)
       });
     },
 

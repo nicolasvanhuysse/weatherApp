@@ -103,7 +103,7 @@ export default defineComponent({
   },
     props:{
       title: String,
-      temp: Number,
+      temp: String,
       // day1: String,
       temp1: Number,
       // day2: String,

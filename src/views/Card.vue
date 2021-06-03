@@ -20,7 +20,7 @@
             </ion-card>
 </template>
 
-<script lang="ts">
+<script>
 import {
     IonCol,
     IonGrid,
@@ -29,8 +29,20 @@ import {
     IonCard, 
     IonCardContent,
     actionSheetController,
+    toastController,
  } from '@ionic/vue';
 import { defineComponent } from 'vue';
+
+import {DATABASE_CONFIGURATION} from '../config';
+
+import firebase from 'firebase/app'
+import 'firebase/firestore'
+
+if (firebase.apps.length === 0) {
+        firebase.initializeApp(DATABASE_CONFIGURATION);
+    }
+
+    export const db = firebase.firestore();
 
 import { 
     sunnyOutline, 
@@ -44,11 +56,6 @@ import {
 export default defineComponent({
   name: "Card",
   components: {
-    // IonPage,
-    // IonContent,
-    // IonHeader,
-    // IonTitle,
-    // IonToolbar,
     IonIcon,
     IonCol,
     IonGrid,
@@ -61,6 +68,14 @@ export default defineComponent({
       temp: Number
   },
   methods: {
+            async openToast(msg) {
+      const toast = await toastController
+        .create({
+          message: msg,
+          duration: 2000
+        })
+      return toast.present();
+    },
     async presentActionSheet() {
       const actionSheet = await actionSheetController
         .create({
@@ -72,7 +87,16 @@ export default defineComponent({
               role: 'destructive',
               icon: trash,
               handler: () => {
-                console.log('Delete clicked')
+                  console.log(this.title)
+
+                const deleteData = db.collection('Cities').where('name','==',this.title);
+                    deleteData.get().then(function(querySnapshot) {
+                    querySnapshot.forEach(function(doc) {
+                    doc.ref.delete();
+                    });
+                });
+                const msg = 'La ville a bien été supprimé de vos favoris';
+                this.openToast(msg);
               },
             },
             {
@@ -80,15 +104,15 @@ export default defineComponent({
               icon: close,
               role: 'cancel',
               handler: () => {
-                console.log('Cancel clicked')
+                console.log('Cancel')
               },
             },
           ],
         });
       await actionSheet.present();
 
-      const { role } = await actionSheet.onDidDismiss();
-      console.log('onDidDismiss resolved with role', role);
+    //   const { role } = await actionSheet.onDidDismiss();
+    //   console.log('onDidDismiss resolved with role', role);
     },
   },
   setup() {
