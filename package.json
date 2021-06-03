@@ -11,13 +11,14 @@
   },
   "dependencies": {
     "@capacitor/core": "2.4.7",
+    "@firebase/webchannel-wrapper": "^0.2.41",
     "@ionic/vue": "^5.4.0",
     "@ionic/vue-router": "^5.4.0",
     "core-js": "^3.6.5",
-    "firebase": "^8.6.3",
+    "firebase": "^8.6.4-20215205147",
     "vue": "^3.0.0-0",
     "vue-router": "^4.0.0-0",
-    "vuefire": "^2.2.5"
+    "vuefire": "^3.0.0-alpha.2"
   },
   "devDependencies": {
     "@capacitor/cli": "2.4.7",

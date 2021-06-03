@@ -1,7 +1,9 @@
 <template>
   <ion-page>
+    <!-- v-for="(city,index) in cities" -->
+    <!-- :key="index" -->
     <ion-content :fullscreen="true">
-      <ion-slides pager="true" :options="slideOpts">
+      <ion-slides pager="true" :options="slideOpts" v-if="cities.length>0">
       <ion-slide>
         <div id="container">
           <ion-grid>
@@ -73,16 +75,24 @@
             </ion-row>
 
           </ion-grid>
-
+                  <ion-button type="submit" @click.prevent="addCities()" >Ajouter</ion-button>
         </div>
       </ion-slide>
-      <compoHome :title="'PARIS'" :temp= "21" :temp1 = "19" :temp2 = "20" :temp3 = "21" :temp4 = "21"></compoHome>
+      <!-- cities[0].name -->
+      <!-- v-if="cities.length>0" :title="cities[0].name" -->
+      <!-- <div v-if="cities.length>0"> -->
+        <compoHome  :title="cities[0].name" >
+          </compoHome>
+
+
+          <!-- </div> -->
+      
       </ion-slides>
     </ion-content>
   </ion-page>
 </template>
 
-<script lang="ts">
+<script>
 import { 
 IonContent,
 IonPage, 
@@ -95,7 +105,21 @@ IonSlide
  } from '@ionic/vue';
 import { defineComponent } from 'vue';
 import { sunnyOutline , rainyOutline, thunderstormOutline , cloudyOutline } from 'ionicons/icons';
+
 import compoHome from './compoHome.vue';
+import weatherService from "../services/weatherService"
+
+import {DATABASE_CONFIGURATION} from '../config';
+
+import firebase from 'firebase/app'
+import 'firebase/firestore'
+// import db from './Search'
+// // Get a Firestore instance
+if (firebase.apps.length === 0) {
+        firebase.initializeApp(DATABASE_CONFIGURATION);
+    }
+
+    export const db = firebase.firestore();
 
 export default defineComponent({
   name: 'Home',
@@ -113,6 +137,11 @@ export default defineComponent({
     IonRow,
     compoHome
   },
+  data(){
+    return {
+      cities: [],
+    };
+  },
   setup() {
     const slideOpts = {
       initialSlide: 1,
@@ -125,7 +154,33 @@ export default defineComponent({
       cloudyOutline,
       slideOpts 
     }
-    }
+    },
+    methods: {
+      addCities() {
+        db.collection('Cities').add({
+        name: 'Lille'
+        })    
+      }
+    },
+    async mounted() {
+      db.collection("Cities")
+      .get()
+      .then(async (querySnapshot) => {
+        const documents = querySnapshot.docs.map((doc) => doc.data());
+
+        const weatherList = await Promise.all(
+          documents.map(async (city) => ({
+             name: city.name,
+          currentWeather: await weatherService.getCityName(city.name),
+          }))
+         
+        );
+        this.cities = weatherList;
+        console.log(this.cities)
+        console.log(documents)
+      });
+    },
+
 });
 </script>
 
