@@ -103,6 +103,8 @@ export default defineComponent({
               text: 'Modifier',
               handler: async ( alertData) => {
 
+                  // méthod modifier
+
             console.log(alertData.editCity)
 
             this.currentWeather = await weatherService.getCityName(alertData.editCity)
@@ -163,6 +165,7 @@ export default defineComponent({
               role: 'destructive',
               icon: trash,
               handler: () => {
+                  // méthod delete
                   console.log(this.title)
 
                 const deleteData = db.collection('Cities').where('name','==',this.title);

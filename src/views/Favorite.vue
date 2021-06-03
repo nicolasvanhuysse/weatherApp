@@ -26,12 +26,12 @@ import {DATABASE_CONFIGURATION} from '../config';
 
 import firebase from 'firebase/app'
 import 'firebase/firestore'
-// Get a Firestore instance
+
 if (firebase.apps.length === 0) {
         firebase.initializeApp(DATABASE_CONFIGURATION);
     }
 
-    export const db = firebase.firestore();
+export const db = firebase.firestore();
 
 import { 
     sunnyOutline, 
@@ -94,8 +94,10 @@ export default defineComponent({
       cloudyOutline
     }
     },
-        async mounted() {
-      db.collection("Cities")
+    async mounted() {
+
+    // Récupérer la liste des Favoris
+    db.collection("Cities")
       .get()
       .then(async (querySnapshot) => {
         const documents = querySnapshot.docs.map((doc) => doc.data());
