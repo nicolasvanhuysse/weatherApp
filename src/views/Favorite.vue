@@ -3,7 +3,7 @@
         <ion-content :fullscreen="true">
             <ion-card>
             </ion-card>
-            <card  v-for="(city,index) in cities" :key="index" :title="city.name" :temp="city.name"  ></card>
+            <card  v-for="(city,index) in cities" :key="index" :title="city.name" :temp="city.currentWeather.list[0].main.temp"  ></card>
         </ion-content>
     </ion-page>
 </template>

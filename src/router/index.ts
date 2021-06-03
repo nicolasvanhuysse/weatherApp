@@ -35,7 +35,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/compoHome',
     name: 'compoHome',
     component: compoHome
-  }
+  },
 ]
 
 const router = createRouter({

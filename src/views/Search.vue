@@ -2,7 +2,8 @@
     <ion-page>
       <!-- currentWeather.name -->
         <ion-content :fullscreen="true">
-            <ion-searchbar animated @ionChange=onChange @save-option="search"><ion-button @click="search">Rechercher</ion-button></ion-searchbar>
+            <ion-searchbar animated @ionChange=onChange @save-option="search"></ion-searchbar>
+            <ion-button @click="search">Ajouter</ion-button>
             <!-- <ion-button type="submit" @click.prevent="addCities()">Ajouter</ion-button> -->
             <!-- {{currentWeather}} -->
             <!-- {{currentWeather5days}} -->

@@ -78,7 +78,7 @@
       <!-- cities[0].name -->
       <!-- v-if="cities.length>0" :title="cities[0].name" -->
       <!-- temp="city.currentWeather.list[0].main.temp" -->
-        <compoHome  v-for="(city,index) in cities" :key="index" :title="city.name" :temp="city.name"  ></compoHome>
+        <compoHome  v-for="(city,index) in cities" :key="index" :title="city.name" :temp="city.currentWeather.list[0].main.temp"  ></compoHome>
       
       </ion-slides>
     </ion-content>
