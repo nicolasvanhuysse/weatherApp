@@ -1,12 +1,10 @@
 <template>
     <ion-page>
-      <!-- currentWeather.name -->
         <ion-content :fullscreen="true">
             <ion-searchbar animated @ionChange=onChange @save-option="search"></ion-searchbar>
+
+            <!-- Pour ajouter en bdd -->
             <ion-button @click="search">Ajouter</ion-button>
-            <!-- <ion-button type="submit" @click.prevent="addCities()">Ajouter</ion-button> -->
-            <!-- {{currentWeather}} -->
-            <!-- {{currentWeather5days}} -->
         </ion-content>
         
     </ion-page>
@@ -25,12 +23,12 @@ import {DATABASE_CONFIGURATION} from '../config';
 
 import firebase from 'firebase/app'
 import 'firebase/firestore'
-// Get a Firestore instance
+
 if (firebase.apps.length === 0) {
         firebase.initializeApp(DATABASE_CONFIGURATION);
     }
 
-    export const db = firebase.firestore();
+export const db = firebase.firestore();
 
 export default defineComponent({
   name: 'Search',

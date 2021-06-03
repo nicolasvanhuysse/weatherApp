@@ -2,83 +2,12 @@
   <ion-page>
     <ion-content :fullscreen="true">
       <ion-slides pager="true" :options="slideOpts" v-if="cities.length>0">
-      <ion-slide>
-        <div id="container">
-          <ion-grid>
-            
-            <ion-row>
-              <ion-col>
-                <h1>Ma position</h1>
-              </ion-col>
-            </ion-row>
 
-            <ion-row>
-              <ion-col>
-                <h2>19 °</h2>
-              </ion-col>
-            </ion-row>
+      <!-- Position actuelle -->
+      <compoHome :title="posGeolocation.city.name" :temp="posGeolocation.list[0].main.temp" :temp1="posGeolocation.list[8].main.temp" :temp2="posGeolocation.list[16].main.temp" :temp3="posGeolocation.list[24].main.temp" :temp4="posGeolocation.list[32].main.temp"></compoHome>
 
-            <ion-row>
-              <ion-col>
-                <ion-icon size="large" :icon="sunnyOutline"></ion-icon>
-              </ion-col>
-            </ion-row>
-
-            <ion-row>
-              <ion-col>
-                <p>Lundi</p>
-              </ion-col>
-              <ion-col>
-                <ion-icon size="large" :icon="sunnyOutline"></ion-icon>
-              </ion-col>
-              <ion-col>
-                <p>19 °</p>
-              </ion-col>
-            </ion-row>
-
-            <ion-row>
-              <ion-col>
-                <p>Mardi</p>
-              </ion-col>
-              <ion-col>
-                <ion-icon size="large" :icon="cloudyOutline"></ion-icon>
-              </ion-col>
-              <ion-col>
-                <p>19 °</p>
-              </ion-col>
-            </ion-row>
-
-            <ion-row>
-              <ion-col>
-                <p>Mercredi</p>
-              </ion-col>
-              <ion-col>
-                <ion-icon size="large" :icon="thunderstormOutline"></ion-icon>
-              </ion-col>
-              <ion-col>
-                <p>19 °</p>
-              </ion-col>
-            </ion-row>
-
-            <ion-row>
-              <ion-col>
-                <p>Jeudi</p>
-              </ion-col>
-              <ion-col>
-                <ion-icon size="large" :icon="rainyOutline"></ion-icon>
-              </ion-col>
-              <ion-col>
-                <p>19 °</p>
-              </ion-col>
-            </ion-row>
-
-          </ion-grid>
-        </div>
-      </ion-slide>
-      <!-- cities[0].name -->
-      <!-- v-if="cities.length>0" :title="cities[0].name" -->
-      <!-- temp="city.currentWeather.list[0].main.temp" -->
-        <compoHome  v-for="(city,index) in cities" :key="index" :title="city.name" :temp="city.currentWeather.list[0].main.temp"  ></compoHome>
+      <!-- Boucle pour récup données bdd -->
+      <compoHome  v-for="(city,index) in cities" :key="index" :title="city.name" :temp="city.currentWeather.list[0].main.temp" :temp1="city.currentWeather.list[8].main.temp" :temp2="city.currentWeather.list[16].main.temp" :temp3="city.currentWeather.list[24].main.temp" :temp4="city.currentWeather.list[32].main.temp"></compoHome>
       
       </ion-slides>
     </ion-content>
@@ -89,13 +18,8 @@
 
 import { 
 IonContent,
-IonPage, 
-IonIcon, 
-IonCol, 
-IonGrid, 
-IonRow,
+IonPage,
 IonSlides,
-IonSlide
  } from '@ionic/vue';
 
 import { defineComponent } from 'vue';
@@ -113,27 +37,27 @@ if (firebase.apps.length === 0) {
         firebase.initializeApp(DATABASE_CONFIGURATION);
     }
 
-    export const db = firebase.firestore();
+export const db = firebase.firestore();
 
 export default defineComponent({
   name: 'Home',
   components: {
     IonContent,
     IonPage,
-    IonIcon,
     IonSlides,
-    IonSlide,
-    IonCol,
-    IonGrid,
-    IonRow,
-    compoHome
+    compoHome,
   },
   data(){
     return {
       cities: [],
+      posGeolocation: [],
+      location:null,
+      gettingLocation: false,
+      errorStr:null
     };
   },
   setup() {
+
     const slideOpts = {
       initialSlide: 1,
       speed: 400
@@ -147,8 +71,42 @@ export default defineComponent({
     }
     },
     methods: {
+      async getLocation() {
+      
+      return new Promise((resolve, reject) => {
+
+        if(!("geolocation" in navigator)) {
+          reject(new Error('Geolocation is not available.'));
+        }
+
+        navigator.geolocation.getCurrentPosition(pos => {
+          resolve(pos);
+        }, err => {
+          reject(err);
+        });
+
+      });
+    },
     },
     async mounted() {
+
+      // Géoloc
+      this.gettingLocation = true;
+      try {
+        this.gettingLocation = false;
+        this.location = await this.getLocation();
+        console.log(this.location.coords.latitude)
+        console.log(this.location.coords.longitude)
+      } catch(e) {
+        this.gettingLocation = false;
+        this.errorStr = e.message;
+      }
+
+      this.posGeolocation = await weatherService.get5daysGeolocation(this.location.coords.latitude, this.location.coords.longitude)
+      console.log(this.posGeolocation.city.name)
+      console.log(this.posGeolocation.list[0].main.temp)
+
+      // récup données bdd
       db.collection("Cities")
       .get()
       .then(async (querySnapshot) => {
@@ -162,7 +120,6 @@ export default defineComponent({
          
         );
         this.cities = weatherList;
-        console.log(this.cities)
       });
     },
 

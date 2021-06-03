@@ -23,7 +23,7 @@
 
             <ion-row>
               <ion-col>
-                <p>Lundi</p>
+                <p>Dans 1 jour</p>
               </ion-col>
               <ion-col>
                 <ion-icon size="large" :icon="sunnyOutline"></ion-icon>
@@ -35,7 +35,7 @@
 
             <ion-row>
               <ion-col>
-                <p>Mardi</p>
+                <p>Dans 2 jours</p>
               </ion-col>
               <ion-col>
                 <ion-icon size="large" :icon="cloudyOutline"></ion-icon>
@@ -47,7 +47,7 @@
 
             <ion-row>
               <ion-col>
-                <p>Mercredi</p>
+                <p>Dans 3 jours</p>
               </ion-col>
               <ion-col>
                 <ion-icon size="large" :icon="thunderstormOutline"></ion-icon>
@@ -59,7 +59,7 @@
 
             <ion-row>
               <ion-col>
-                <p>Jeudi</p>
+                <p>Dans 4 jours</p>
               </ion-col>
               <ion-col>
                 <ion-icon size="large" :icon="rainyOutline"></ion-icon>
@@ -89,13 +89,7 @@ import { sunnyOutline , rainyOutline, thunderstormOutline , cloudyOutline } from
 export default defineComponent({
   name: 'compoHome',
   components: {
-    // IonContent,
-    // IonHeader,
-    // IonPage,
-    // IonTitle,
-    // IonToolbar,
     IonIcon,
-    // IonSlides,
     IonSlide,
     IonCol,
     IonGrid,
@@ -103,14 +97,10 @@ export default defineComponent({
   },
     props:{
       title: String,
-      temp: String,
-      // day1: String,
+      temp: Number,
       temp1: Number,
-      // day2: String,
       temp2: Number,
-      // day3: String,
       temp3: Number,
-      // day4: String,
       temp4: Number
   },
   setup() {
